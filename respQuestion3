@@ -1,0 +1,49 @@
+
+2) 
+Quel appel système cette fonction doit elle utiliser ?
+Write()
+
+Ajouter la fonction UART_SetSpeed() à partir du code qui est dans UART_Init() et remplacer
+le code dans UART_Init() par un appel à la fonction UART_SetSpeed().
+Pourquoi faire ce genre de modification ?
+
+Pour rendre le code plus facilement maintenanble et pour que la vitesse de communication puisse être modifié ailleurs.
+
+3.0) Comment faire simplement (sans tester toutes les configurations possibles) pour que l’initialisation soit valable quelle que soit la configuration de départ de la ligne série ?
+
+
+Dans le code original de la fonction "UART_Init", la configuration de la ligne série actuelle est récupérée à l'aide de la fonction "tcgetattr". 
+Cependant, cette configuration peut être différente de celle attendue par la fonction, ce qui peut entraîner des problèmes lors de l'initialisation.
+Pour remédier à cela, nous devons d'abord réinitialiser les paramètres de la ligne série en appelant la fonction "tcsetattr" avec le paramètre "TCSANOW".
+Ce paramètre indique que les modifications doivent être appliquées immédiatement. Ainsi, la ligne série est configurée avec les mêmes paramètres actuels, 
+garantissant que l'initialisation fonctionnera quelle que soit la configuration de départ.
+Ensuite, nous pouvons appliquer les modifications nécessaires aux paramètres de la ligne série. 
+Dans le code modifié, la fonction "UART_SetSpeed" est appelée pour configurer la vitesse de transmission, 
+puis les indicateurs de contrôle de flux, les bits de données, les bits d'arrêt et la parité sont configurés en fonction des valeurs passées en paramètres.
+En fin de compte, cette modification permet de garantir que l'initialisation fonctionnera correctement, 
+même si la configuration de la ligne série est différente de celle attendue.
+
+
+TANT QUE données sur l'interface série sont disponibles FAIRE
+    Lire les données de l'interface série
+    Traiter les données reçues
+FIN TANT QUE
+
+SI aucune donnée n'est disponible ALORS
+    Lire une chaîne de texte depuis la console
+    Envoyer la chaîne de texte via l'interface série
+FIN SI
+
+tcgetattr : recuper config actuel de l'interface, 
+
+mdoe canonique : mode ou on ne va envoer les caractère que quand on a le char en of ligne (entrée)
+pour echange les char avec le shell avec le quel on diaglogue
+
+mode non canonique : comme nano, on a pas besoin de faire entrée pour manipuler le terminal
+
+lsusb
+
+config tty ?
+
+stty -a < /dev/ttyACM0
+
